@@ -5,14 +5,55 @@ import (
 	"flag"
 	"fmt"
 	"html"
-	"io/fs"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"sort"
 	"strings"
 	"unicode"
 )
+
+// skipYAMLFrontMatter skips YAML front matter (--- ... ---) and returns the content lines after it.
+func skipYAMLFrontMatter(lines []string) []string {
+	if len(lines) > 0 && strings.TrimSpace(lines[0]) == "---" {
+		for i := 1; i < len(lines); i++ {
+			if strings.TrimSpace(lines[i]) == "---" {
+				return lines[i+1:]
+			}
+		}
+	}
+	return lines
+}
+
+// extractSummaryText returns the first n lines (HTML-escaped, joined with <br>) from content lines.
+func extractSummaryText(lines []string, n int) string {
+	if len(lines) < n {
+		n = len(lines)
+	}
+	first := lines[:n]
+	for i, l := range first {
+		first[i] = html.EscapeString(l)
+	}
+	return strings.Join(first, "<br>")
+}
+
+// writeDetailsBlock writes a details block to out, using summary and preview lines.
+func writeDetailsBlock(out *os.File, summary string, contentLines []string, previewCount int) {
+	if len(contentLines) < previewCount {
+		previewCount = len(contentLines)
+	}
+	fmt.Fprintf(out, "<details>\n")
+	fmt.Fprintf(out, "<summary>%s</summary>\n\n", summary)
+	for i := range previewCount {
+		fmt.Fprintln(out, contentLines[i])
+	}
+	if len(contentLines) > previewCount {
+		for i := previewCount; i < len(contentLines); i++ {
+			fmt.Fprintln(out, contentLines[i])
+		}
+		fmt.Fprintln(out)
+	}
+	fmt.Fprintf(out, "</details>\n\n")
+}
 
 func main() {
 	flag.Usage = func() {
@@ -32,12 +73,12 @@ func main() {
 	title := toTitle(catName)
 
 	// 2. List and sort Markdown files
-	entries, err := ioutil.ReadDir(catDir)
+	entries, err := os.ReadDir(catDir)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "error reading dir: %v\n", err)
 		os.Exit(1)
 	}
-	var mdFiles []fs.FileInfo
+	var mdFiles []os.DirEntry
 	for _, e := range entries {
 		if e.IsDir() {
 			continue
@@ -65,56 +106,15 @@ func main() {
 	// 5. Process each file
 	for _, fi := range mdFiles {
 		path := filepath.Join(catDir, fi.Name())
-		content, err := ioutil.ReadFile(path)
+		content, err := os.ReadFile(path)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "failed to read %s: %v\n", path, err)
 			continue
 		}
 		lines := splitLines(string(content))
-
-		// --- skip YAML front matter ---
-		contentStart := 0
-		if len(lines) > 0 && strings.TrimSpace(lines[0]) == "---" {
-			// Find the closing '---'
-			for i := 1; i < len(lines); i++ {
-				if strings.TrimSpace(lines[i]) == "---" {
-					contentStart = i + 1
-					break
-				}
-			}
-		}
-		contentLines := lines[contentStart:]
-
-		// --- summary: first 5 lines of content, HTML-escaped, joined with <br> ---
-		previewCount := 10
-		if len(contentLines) < previewCount {
-			previewCount = len(contentLines)
-		}
-		// For summary, use first 5 lines
-		summaryLines := 5
-		if len(contentLines) < summaryLines {
-			summaryLines = len(contentLines)
-		}
-		first5 := contentLines[:summaryLines]
-		for i, l := range first5 {
-			first5[i] = html.EscapeString(l)
-		}
-		summaryText := strings.Join(first5, "<br>")
-
-		// 6. Write details block
-		fmt.Fprintf(out, "<details>\n")
-		fmt.Fprintf(out, "<summary>%s</summary>\n\n", summaryText)
-		for i := 0; i < previewCount; i++ {
-			fmt.Fprintln(out, contentLines[i])
-		}
-		// If longer, append rest un‐collapsed
-		if len(contentLines) > previewCount {
-			for i := previewCount; i < len(contentLines); i++ {
-				fmt.Fprintln(out, contentLines[i])
-			}
-			fmt.Fprintln(out)
-		}
-		fmt.Fprintf(out, "</details>\n\n")
+		contentLines := skipYAMLFrontMatter(lines)
+		summary := extractSummaryText(contentLines, 5)
+		writeDetailsBlock(out, summary, contentLines, 10)
 	}
 
 	fmt.Printf("Generated %s\n", outPath)
