@@ -37,9 +37,10 @@ func extractSummaryText(lines []string, n int) string {
 }
 
 // writeDetailsBlock writes a details block to out, using summary and preview lines.
-func writeDetailsBlock(out *os.File, summary string, contentLines []string) {
+func writeDetailsBlock(out *os.File, summary string, contentLines []string, fileName string) {
 	fmt.Fprintf(out, "<details>\n")
 	fmt.Fprintf(out, "<summary>%s</summary>\n\n", summary)
+	fmt.Fprintf(out, "[リンク](%s)\n\n", fileName)
 
 	isCodeBlock := false
 	for _, line := range contentLines {
@@ -115,7 +116,7 @@ func main() {
 		lines := splitLines(string(content))
 		contentLines := skipYAMLFrontMatter(lines)
 		summary := extractSummaryText(contentLines, 1)
-		writeDetailsBlock(out, summary, contentLines)
+		writeDetailsBlock(out, summary, contentLines, fi.Name())
 	}
 
 	fmt.Printf("Generated %s\n", outPath)
