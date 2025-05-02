@@ -1,8 +1,11 @@
----
-date: 2025-04-12
-original: https://takoeight0821.hatenablog.jp/entry/2025/04/12/021105
----
-# 関数適用は後置演算子
+# Compiler
+
+<details>
+<summary># 関数適用は後置演算子 | 2025-04-12</summary>
+
+<a href="2025-04-12-parsing_application.md">link</a>
+
+## 関数適用は後置演算子
 
 再帰下降構文解析で、以下のような関数適用をうまくパースしたい。
 
@@ -115,3 +118,5 @@ func (p *Parser) exprTail(expr Node) Node {
 
 最近は「関数適用は後置演算子」戦略でパーサーを書くことが多い。
 多分、これを発展させるとPrattパーサーみたいな話が出てくるのかな。
+</details>
+

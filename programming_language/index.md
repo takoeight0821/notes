@@ -3,7 +3,7 @@
 <details>
 <summary># 継続モナドで立ち向かうローンパターンとEither地獄 | 2024-03-12</summary>
 
-<a href="2024-03-12-either-hell-with-continuation.md">元ファイル</a>
+<a href="2024-03-12-either-hell-with-continuation.md">link</a>
 
 ## 継続モナドで立ち向かうローンパターンとEither地獄
 
@@ -120,7 +120,7 @@ with m = ContT \k -> do
 <details>
 <summary># 継続渡し・コールバックを読みやすくする言語機能たち（Koka・Gleam・Roc） | 2024-04-08</summary>
 
-<a href="2024-04-08-syntax-for-cps.md">元ファイル</a>
+<a href="2024-04-08-syntax-for-cps.md">link</a>
 
 ## 継続渡し・コールバックを読みやすくする言語機能たち（Koka・Gleam・Roc）
 
