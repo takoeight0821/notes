@@ -3,7 +3,6 @@
 <details>
 <summary># 継続モナドで立ち向かうローンパターンとEither地獄<br><br>Haskellでファイルなどのリソースの解放を保証するテクニックとして、ローンパターン（Loan Pattern）がある。`withFile :: FilePath -&gt; IOMode -&gt; (Handle -&gt; IO r) -&gt; IO r`などがその例だ。<br>ローンパターンによる関数を複数使ったプログラムは、無名関数のネストが深くなる。<br></summary>
 
-```md
 # 継続モナドで立ち向かうローンパターンとEither地獄
 
 Haskellでファイルなどのリソースの解放を保証するテクニックとして、ローンパターン（Loan Pattern）がある。`withFile :: FilePath -&gt; IOMode -&gt; (Handle -&gt; IO r) -&gt; IO r`などがその例だ。
@@ -14,8 +13,6 @@ main = do
   withFile "src.txt" ReadMode \src ->
     withFile "dst.txt" WriteMode \dst ->
       ...
-```
-
 ```
 
 この問題には、継続モナド`ContT`を使ったきれいな解決策が知られている。
@@ -122,7 +119,6 @@ with m = ContT \k -> do
 <details>
 <summary># 継続渡し・コールバックを読みやすくする言語機能たち（Koka・Gleam・Roc）<br><br>継続渡しスタイル、あるいはコールバック関数は非常に強力なテクニックだ。<br>例えばJavaScriptでは、非同期処理を扱う`.then`メソッドが有名どころだろう。<br></summary>
 
-```md
 # 継続渡し・コールバックを読みやすくする言語機能たち（Koka・Gleam・Roc）
 
 継続渡しスタイル、あるいはコールバック関数は非常に強力なテクニックだ。
@@ -133,8 +129,6 @@ fetch("http://example.com/movies.json")
   .then((response) => response.json())
   .then((movies) => console.log(movies))
 ```
-```
-
 
 継続渡しスタイルは読みにくい。そこで、JavaScriptではasync構文が導入されている。
 

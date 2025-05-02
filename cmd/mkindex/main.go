@@ -104,11 +104,9 @@ func main() {
 		// 6. Write details block
 		fmt.Fprintf(out, "<details>\n")
 		fmt.Fprintf(out, "<summary>%s</summary>\n\n", summaryText)
-		fmt.Fprintf(out, "```md\n")
 		for i := 0; i < previewCount; i++ {
 			fmt.Fprintln(out, contentLines[i])
 		}
-		fmt.Fprintf(out, "```\n\n")
 		// If longer, append rest un‐collapsed
 		if len(contentLines) > previewCount {
 			for i := previewCount; i < len(contentLines); i++ {
