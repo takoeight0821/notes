@@ -102,7 +102,7 @@ func main() {
 		if e.IsDir() {
 			continue
 		}
-		if strings.HasSuffix(e.Name(), ".md") && e.Name() != "index.md" {
+		if strings.HasSuffix(e.Name(), ".md") && e.Name() != "README.md" {
 			mdFiles = append(mdFiles, e)
 		}
 	}
@@ -110,11 +110,11 @@ func main() {
 		return mdFiles[i].Name() < mdFiles[j].Name()
 	})
 
-	// 3. Open index.md for writing
-	outPath := filepath.Join(catDir, "index.md")
+	// 3. Open README.md for writing
+	outPath := filepath.Join(catDir, "README.md")
 	out, err := os.Create(outPath)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "cannot create index.md: %v\n", err)
+		fmt.Fprintf(os.Stderr, "cannot create README.md: %v\n", err)
 		os.Exit(1)
 	}
 	defer out.Close()
