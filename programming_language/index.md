@@ -1,11 +1,11 @@
 # Programming Language
 
 <details>
-<summary># 継続モナドで立ち向かうローンパターンとEither地獄<br><br>Haskellでファイルなどのリソースの解放を保証するテクニックとして、ローンパターン（Loan Pattern）がある。`withFile :: FilePath -&gt; IOMode -&gt; (Handle -&gt; IO r) -&gt; IO r`などがその例だ。<br>ローンパターンによる関数を複数使ったプログラムは、無名関数のネストが深くなる。<br></summary>
+<summary># 継続モナドで立ち向かうローンパターンとEither地獄</summary>
 
-# 継続モナドで立ち向かうローンパターンとEither地獄
+## 継続モナドで立ち向かうローンパターンとEither地獄
 
-Haskellでファイルなどのリソースの解放を保証するテクニックとして、ローンパターン（Loan Pattern）がある。`withFile :: FilePath -&gt; IOMode -&gt; (Handle -&gt; IO r) -&gt; IO r`などがその例だ。
+Haskellでファイルなどのリソースの解放を保証するテクニックとして、ローンパターン（Loan Pattern）がある。`withFile :: FilePath -> IOMode -> (Handle -> IO r) -> IO r`などがその例だ。
 ローンパターンによる関数を複数使ったプログラムは、無名関数のネストが深くなる。
 
 ```haskell
@@ -90,7 +90,7 @@ with m = ContT \k -> do
 ややこしいコードを上手く継続渡しスタイルに落としこめれば、`ContT`を使ったシンプルなdo記法にリファクタリングできる。
 `ContT`自体が少々ややこしいので乱用は禁物だが、うまく使えば最小限の変更でプログラムがグッと読みやすくなる。
 
-## 参考文献
+### 参考文献
 * [ローンパターン \- haskell\-shoen](https://scrapbox.io/haskell-shoen/%E3%83%AD%E3%83%BC%E3%83%B3%E3%83%91%E3%82%BF%E3%83%BC%E3%83%B3)
 * [Why would you use ContT?](https://ro-che.info/articles/2019-06-07-why-use-contt)
   + `ContT`を使って継続渡しスタイルをdo記法に書き換える例を紹介している。
@@ -101,7 +101,7 @@ with m = ContT \k -> do
 * [fallibleというパッケージをリリースしました \- Haskell\-jp](https://haskell.jp/blog/posts/2019/fallible.html)
   + ↑の記事をEitherに拡張したもの。
 
-## 追記というか余談
+### 追記というか余談
 
 [haskell \- Monadic function of \`\(a \-> m \(Either e b\)\) \-> Either e a \-> m \(Either e b\)\`? \- Stack Overflow](https://stackoverflow.com/questions/73354040/monadic-function-of-a-m-either-e-b-either-e-a-m-either-e-b)によると、`with`はもっと抽象化できるらしい。
 
@@ -113,13 +113,12 @@ with m = ContT \k -> do
 ```
 
 この`with`は`Maybe`にも対応している。対応しているが、ちょっとやりすぎな気もする。
-
 </details>
 
 <details>
-<summary># 継続渡し・コールバックを読みやすくする言語機能たち（Koka・Gleam・Roc）<br><br>継続渡しスタイル、あるいはコールバック関数は非常に強力なテクニックだ。<br>例えばJavaScriptでは、非同期処理を扱う`.then`メソッドが有名どころだろう。<br></summary>
+<summary># 継続渡し・コールバックを読みやすくする言語機能たち（Koka・Gleam・Roc）</summary>
 
-# 継続渡し・コールバックを読みやすくする言語機能たち（Koka・Gleam・Roc）
+## 継続渡し・コールバックを読みやすくする言語機能たち（Koka・Gleam・Roc）
 
 継続渡しスタイル、あるいはコールバック関数は非常に強力なテクニックだ。
 例えばJavaScriptでは、非同期処理を扱う`.then`メソッドが有名どころだろう。
@@ -254,6 +253,5 @@ JavaScriptに見られる`async`構文は、様々な言語で導入されてい
 
 `async`構文が本当にやりたいことは継続渡しスタイルを直接スタイルのように書くことだ、と思うと、もっと単純な解決策がある。それがKokaの`with`やGleamの`use`構文だ。
 あるいは、`with`や`use`と同じように、`async`構文は継続渡しスタイルに立ち向かうための道具だ、という見方もできる。
-
 </details>
 

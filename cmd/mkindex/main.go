@@ -37,20 +37,15 @@ func extractSummaryText(lines []string, n int) string {
 }
 
 // writeDetailsBlock writes a details block to out, using summary and preview lines.
-func writeDetailsBlock(out *os.File, summary string, contentLines []string, previewCount int) {
-	if len(contentLines) < previewCount {
-		previewCount = len(contentLines)
-	}
+func writeDetailsBlock(out *os.File, summary string, contentLines []string) {
 	fmt.Fprintf(out, "<details>\n")
 	fmt.Fprintf(out, "<summary>%s</summary>\n\n", summary)
-	for i := range previewCount {
-		fmt.Fprintln(out, contentLines[i])
-	}
-	if len(contentLines) > previewCount {
-		for i := previewCount; i < len(contentLines); i++ {
-			fmt.Fprintln(out, contentLines[i])
+	for _, line := range contentLines {
+		// If line is header line, increment header level
+		if strings.HasPrefix(line, "#") {
+			fmt.Fprint(out, "#")
 		}
-		fmt.Fprintln(out)
+		fmt.Fprintln(out, line)
 	}
 	fmt.Fprintf(out, "</details>\n\n")
 }
@@ -113,8 +108,8 @@ func main() {
 		}
 		lines := splitLines(string(content))
 		contentLines := skipYAMLFrontMatter(lines)
-		summary := extractSummaryText(contentLines, 5)
-		writeDetailsBlock(out, summary, contentLines, 10)
+		summary := extractSummaryText(contentLines, 1)
+		writeDetailsBlock(out, summary, contentLines)
 	}
 
 	fmt.Printf("Generated %s\n", outPath)
