@@ -40,10 +40,16 @@ func extractSummaryText(lines []string, n int) string {
 func writeDetailsBlock(out *os.File, summary string, contentLines []string) {
 	fmt.Fprintf(out, "<details>\n")
 	fmt.Fprintf(out, "<summary>%s</summary>\n\n", summary)
+
+	isCodeBlock := false
 	for _, line := range contentLines {
 		// If line is header line, increment header level
-		if strings.HasPrefix(line, "#") {
+		if !isCodeBlock && strings.HasPrefix(line, "#") {
 			fmt.Fprint(out, "#")
+		}
+		if strings.HasPrefix(line, "```") {
+			// Toggle code block state
+			isCodeBlock = !isCodeBlock
 		}
 		fmt.Fprintln(out, line)
 	}
