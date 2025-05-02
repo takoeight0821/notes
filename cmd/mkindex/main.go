@@ -57,7 +57,7 @@ func extractSummaryText(lines []string, n int) string {
 func writeDetailsBlock(out *os.File, summary string, contentLines []string, fileName string, date string) {
 	fmt.Fprintf(out, "<details>\n")
 	fmt.Fprintf(out, "<summary>%s | %s</summary>\n\n", summary, date)
-	fmt.Fprintf(out, "<a href=\"%s\">元ファイル</a>\n\n", fileName)
+	fmt.Fprintf(out, "<a href=\"%s\">link</a>\n\n", fileName)
 
 	isCodeBlock := false
 	for _, line := range contentLines {
