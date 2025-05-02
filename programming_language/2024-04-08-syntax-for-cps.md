@@ -2,7 +2,6 @@
 date: 2024-04-08
 original: https://takoeight0821.hatenablog.jp/entry/2024/04/08/193449
 ---
-
 # 継続渡し・コールバックを読みやすくする言語機能たち（Koka・Gleam・Roc）
 
 継続渡しスタイル、あるいはコールバック関数は非常に強力なテクニックだ。

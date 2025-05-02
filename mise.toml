@@ -1,0 +1,3 @@
+[tasks.mkindex]
+description = "Generate the index file"
+run = "go run ./cmd/mkindex"
