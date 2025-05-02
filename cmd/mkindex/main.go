@@ -24,6 +24,23 @@ func skipYAMLFrontMatter(lines []string) []string {
 	return lines
 }
 
+// extractDateFromYAMLFrontMatter extracts the date field from YAML front matter if present.
+func extractDateFromYAMLFrontMatter(lines []string) string {
+	if len(lines) == 0 || strings.TrimSpace(lines[0]) != "---" {
+		return ""
+	}
+	for i := 1; i < len(lines); i++ {
+		line := strings.TrimSpace(lines[i])
+		if line == "---" {
+			break
+		}
+		if strings.HasPrefix(line, "date:") {
+			return strings.TrimSpace(strings.TrimPrefix(line, "date:"))
+		}
+	}
+	return ""
+}
+
 // extractSummaryText returns the first n lines (HTML-escaped, joined with <br>) from content lines.
 func extractSummaryText(lines []string, n int) string {
 	if len(lines) < n {
@@ -37,10 +54,10 @@ func extractSummaryText(lines []string, n int) string {
 }
 
 // writeDetailsBlock writes a details block to out, using summary and preview lines.
-func writeDetailsBlock(out *os.File, summary string, contentLines []string, fileName string) {
+func writeDetailsBlock(out *os.File, summary string, contentLines []string, fileName string, date string) {
 	fmt.Fprintf(out, "<details>\n")
-	fmt.Fprintf(out, "<summary>%s</summary>\n\n", summary)
-	fmt.Fprintf(out, "[リンク](%s)\n\n", fileName)
+	fmt.Fprintf(out, "<summary>%s | %s</summary>\n\n", summary, date)
+	fmt.Fprintf(out, "<a href=\"%s\">元ファイル</a>\n\n", fileName)
 
 	isCodeBlock := false
 	for _, line := range contentLines {
@@ -114,9 +131,10 @@ func main() {
 			continue
 		}
 		lines := splitLines(string(content))
+		date := extractDateFromYAMLFrontMatter(lines)
 		contentLines := skipYAMLFrontMatter(lines)
 		summary := extractSummaryText(contentLines, 1)
-		writeDetailsBlock(out, summary, contentLines, fi.Name())
+		writeDetailsBlock(out, summary, contentLines, fi.Name(), date)
 	}
 
 	fmt.Printf("Generated %s\n", outPath)
