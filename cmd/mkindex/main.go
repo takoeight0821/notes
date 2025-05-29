@@ -26,7 +26,7 @@ func skipYAMLFrontMatter(lines []string) []string {
 
 // extractDateFromYAMLFrontMatter extracts the date field from YAML front matter if present.
 func extractDateFromYAMLFrontMatter(lines []string) string {
-	if len(lines) == 0 || strings.TrimSpace(lines[0]) != "---" {
+if len(lines) == 0 || strings.TrimSpace(lines[0]) != "---" {
 		return ""
 	}
 	for i := 1; i < len(lines); i++ {
